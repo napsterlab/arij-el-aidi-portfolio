@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arij El Aidi — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bio-deep:   #0e2a1a;
+    --bio-dark:   #163d26;
+    --bio-mid:    #1f6b3e;
+    --bio-sage:   #3a9e62;
+    --bio-light:  #72c493;
+    --bio-pale:   #c2eed5;
+    --mauve:      #7b4fa0;
+    --mauve-pale: #e8d8f5;
+    --cream:      #f4faf7;
+    --cream-dark: #e6f4ec;
+    --ink:        #0d1a12;
+    --ink-mid:    #2e4038;
+    --ink-light:  #6e8878;
+    --gold:       #c8a84b;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--cream);
+    color: var(--ink);
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    position: fixed; width:10px; height:10px;
+    background: var(--bio-sage); border-radius:50%;
+    pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%);
+    transition: width .3s, height .3s, background .3s;
+  }
+  .cursor-ring {
+    position:fixed; width:38px; height:38px;
+    border:1px solid var(--bio-sage); border-radius:50%;
+    pointer-events:none; z-index:9998;
+    transform:translate(-50%,-50%);
+    transition: width .3s, height .3s, opacity .3s;
+    opacity:.45;
+  }
+
+  /* ── NOISE ── */
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:1000; opacity:.3;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.3rem 3rem;
+    background: rgba(244,250,247,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(194,238,213,0.4);
+  }
+  .nav-logo {
+    font-family:'DM Mono',monospace; font-size:.68rem;
+    letter-spacing:.15em; color:var(--bio-mid); text-transform:uppercase;
+  }
+  .nav-links { display:flex; gap:2.5rem; list-style:none; }
+  .nav-links a {
+    font-family:'DM Mono',monospace; font-size:.63rem;
+    letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink-mid); text-decoration:none; transition:color .3s;
+  }
+  .nav-links a:hover { color:var(--bio-sage); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height:100vh;
+    display:grid; grid-template-columns:1fr 1fr;
+    position:relative; overflow:hidden;
+  }
+
+  /* Animated cell background */
+  .hero-bg {
+    position:absolute; inset:0; z-index:0; overflow:hidden;
+  }
+  .hero-bg canvas { width:100%; height:100%; }
+
+  .hero-left {
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:8rem 3rem 5rem; position:relative; z-index:2;
+  }
+  .hero-tag {
+    font-family:'DM Mono',monospace; font-size:.63rem;
+    letter-spacing:.2em; text-transform:uppercase;
+    color:var(--bio-sage); margin-bottom:1.5rem;
+    opacity:0; animation:fadeUp .8s .3s forwards;
+  }
+  .hero-name {
+    font-size:clamp(3.5rem,7vw,6.5rem); font-weight:300;
+    line-height:.92; letter-spacing:-.02em; color:var(--bio-deep);
+    opacity:0; animation:fadeUp .8s .5s forwards;
+  }
+  .hero-name em { font-style:italic; color:var(--bio-sage); }
+  .hero-desc {
+    margin-top:2rem; font-size:1.05rem; font-weight:300;
+    line-height:1.75; color:var(--ink-mid); max-width:400px;
+    opacity:0; animation:fadeUp .8s .7s forwards;
+  }
+  .hero-contacts {
+    margin-top:2.5rem; display:flex; flex-direction:column; gap:.5rem;
+    opacity:0; animation:fadeUp .8s .9s forwards;
+  }
+  .hero-contacts a {
+    font-family:'DM Mono',monospace; font-size:.68rem;
+    color:var(--ink-light); text-decoration:none; letter-spacing:.05em;
+    transition:color .3s;
+  }
+  .hero-contacts a:hover { color:var(--bio-sage); }
+
+  /* Cell SVG panel */
+  .hero-right {
+    position:relative; overflow:hidden;
+    background: var(--bio-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cell-art {
+    opacity:0; animation:fadeIn 1.2s .6s forwards;
+    width:85%; max-width:460px;
+  }
+  .cell-art svg .nucleus    { animation: pulsate 4s ease-in-out infinite; }
+  .cell-art svg .organelle  { animation: floatOrg 6s ease-in-out infinite; }
+  .cell-art svg .organelle2 { animation: floatOrg 8s ease-in-out infinite reverse; }
+  .cell-art svg .organelle3 { animation: floatOrg 5s ease-in-out infinite 1s; }
+
+  .hero-scroll {
+    position:absolute; bottom:2.5rem; left:3rem;
+    display:flex; align-items:center; gap:.8rem;
+    opacity:0; animation:fadeUp .8s 1.2s forwards;
+  }
+  .hero-scroll span {
+    font-family:'DM Mono',monospace; font-size:.58rem;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--ink-light);
+  }
+  .scroll-line { width:40px; height:1px; background:var(--bio-sage); animation:expandLine 1s 1.5s both; }
+
+  /* ── SECTIONS ── */
+  section { padding:7rem 3rem; position:relative; }
+
+  .section-label {
+    font-family:'DM Mono',monospace; font-size:.6rem;
+    letter-spacing:.25em; text-transform:uppercase;
+    color:var(--bio-sage); margin-bottom:3rem;
+    display:flex; align-items:center; gap:1rem;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--bio-pale); max-width:120px; }
+
+  /* ── FORMATION ── */
+  #formation { background:var(--bio-deep); }
+  #formation .section-label { color:var(--bio-light); }
+  #formation .section-label::after { background:var(--bio-mid); }
+
+  .formation-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1px; background:var(--bio-mid); border:1px solid var(--bio-mid);
+  }
+  .formation-card {
+    background:var(--bio-deep); padding:2.5rem 2rem;
+    position:relative; overflow:hidden; transition:background .4s;
+  }
+  .formation-card:hover { background:#0d2e1c; }
+  .formation-card::before {
+    content:''; position:absolute; top:0; left:0;
+    width:3px; height:0; background:var(--bio-light); transition:height .4s;
+  }
+  .formation-card:hover::before { height:100%; }
+  .formation-year {
+    font-family:'DM Mono',monospace; font-size:.6rem;
+    letter-spacing:.15em; color:var(--bio-light); margin-bottom:1rem;
+  }
+  .formation-title {
+    font-size:1.1rem; font-weight:400; line-height:1.4; color:var(--cream); margin-bottom:.4rem;
+  }
+  .formation-school { font-size:.82rem; font-style:italic; color:var(--bio-light); margin-bottom:1rem; }
+  .formation-desc { font-size:.82rem; line-height:1.65; color:rgba(244,250,247,.5); }
+
+  /* ── EXPERIENCE ── */
+  #experience { background:var(--cream-dark); }
+
+  .exp-card {
+    border:1px solid var(--bio-pale); padding:2.5rem;
+    position:relative; overflow:hidden;
+    transition:transform .3s, box-shadow .3s;
+  }
+  .exp-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(14,42,26,.1); }
+  .exp-card::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,var(--bio-mid),var(--bio-light));
+    transform:scaleX(0); transform-origin:left; transition:transform .4s;
+  }
+  .exp-card:hover::after { transform:scaleX(1); }
+
+  .exp-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.4rem; }
+  .exp-title { font-size:1.2rem; font-weight:400; color:var(--bio-deep); line-height:1.3; }
+  .exp-date {
+    font-family:'DM Mono',monospace; font-size:.6rem;
+    letter-spacing:.12em; color:var(--ink-light); white-space:nowrap; margin-left:1rem;
+  }
+  .exp-place { font-size:.85rem; font-style:italic; color:var(--bio-sage); margin-bottom:1.2rem; }
+  .exp-list {
+    list-style:none; display:flex; flex-direction:column; gap:.5rem; margin-bottom:1.2rem;
+  }
+  .exp-list li {
+    font-size:.9rem; line-height:1.6; color:var(--ink-mid); padding-left:1.2rem; position:relative;
+  }
+  .exp-list li::before { content:''; position:absolute; left:0; top:.7em; width:5px; height:1px; background:var(--bio-sage); }
+  .exp-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+  .exp-tag {
+    font-family:'DM Mono',monospace; font-size:.58rem;
+    padding:.2rem .55rem; background:var(--bio-pale); color:var(--bio-mid);
+    letter-spacing:.04em;
+  }
+
+  /* ── CERTIFICATIONS ── */
+  #certifications { background:var(--bio-deep); }
+  #certifications .section-label { color:var(--bio-light); }
+  #certifications .section-label::after { background:var(--bio-mid); }
+
+  .cert-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--bio-mid); border:1px solid var(--bio-mid); }
+  .cert-card {
+    background:var(--bio-deep); padding:2rem;
+    position:relative; overflow:hidden; transition:background .4s;
+  }
+  .cert-card:hover { background:#0d2e1c; }
+  .cert-badge {
+    font-family:'DM Mono',monospace; font-size:.58rem;
+    letter-spacing:.15em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:.8rem;
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .cert-badge::before { content:''; width:20px; height:1px; background:var(--gold); }
+  .cert-title { font-size:1.05rem; font-weight:400; color:var(--cream); margin-bottom:.3rem; line-height:1.3; }
+  .cert-issuer { font-size:.78rem; font-style:italic; color:var(--bio-light); margin-bottom:.8rem; }
+  .cert-desc { font-size:.8rem; line-height:1.6; color:rgba(244,250,247,.5); }
+  .cert-valid {
+    margin-top:.8rem;
+    font-family:'DM Mono',monospace; font-size:.58rem;
+    letter-spacing:.1em; color:var(--gold); opacity:.8;
+  }
+
+  /* ── COMPETENCES ── */
+  #competences { background:var(--cream); }
+
+  .skills-layout { display:grid; grid-template-columns:1fr 2fr; gap:5rem; align-items:start; }
+  .skills-intro { position:sticky; top:8rem; }
+  .skills-intro h2 { font-size:clamp(2.5rem,4vw,3.5rem); font-weight:300; line-height:1.1; color:var(--bio-deep); }
+  .skills-intro h2 em { font-style:italic; color:var(--bio-sage); }
+  .skills-intro p { margin-top:1.5rem; font-size:.95rem; line-height:1.7; color:var(--ink-mid); }
+
+  .skills-list { display:flex; flex-direction:column; }
+  .skill-row {
+    display:grid; grid-template-columns:160px 1fr; gap:2rem; align-items:start;
+    padding:1.8rem 0; border-bottom:1px solid var(--bio-pale); transition:padding-left .3s;
+  }
+  .skill-row:first-child { border-top:1px solid var(--bio-pale); }
+  .skill-row:hover { padding-left:.5rem; }
+  .skill-cat {
+    font-family:'DM Mono',monospace; font-size:.63rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--bio-sage); padding-top:.15rem;
+  }
+  .skill-tags { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .skill-tag {
+    font-family:'DM Mono',monospace; font-size:.63rem;
+    padding:.3rem .7rem; border:1px solid var(--bio-pale);
+    color:var(--ink-mid); letter-spacing:.04em; transition:all .3s;
+  }
+  .skill-tag:hover { background:var(--bio-mid); color:var(--cream); border-color:var(--bio-mid); }
+
+  /* ── LANGUES ── */
+  #langues { background:var(--cream-dark); padding:5rem 3rem; }
+  .langues-grid {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:1px; background:var(--bio-pale); border:1px solid var(--bio-pale);
+  }
+  .langue-card {
+    background:var(--cream-dark); padding:2rem 1.5rem; text-align:center; transition:background .3s;
+  }
+  .langue-card:hover { background:var(--bio-deep); }
+  .langue-card:hover .langue-name,
+  .langue-card:hover .langue-level { color:var(--cream); }
+  .langue-name { font-size:1.5rem; font-weight:300; color:var(--bio-deep); margin-bottom:.4rem; }
+  .langue-level {
+    font-family:'DM Mono',monospace; font-size:.58rem;
+    letter-spacing:.15em; text-transform:uppercase; color:var(--bio-sage);
+    transition:color .3s;
+  }
+
+  /* ── INTERETS ── */
+  #interets { background:var(--bio-deep); padding:5rem 3rem; }
+  #interets .section-label { color:var(--bio-light); }
+  #interets .section-label::after { background:var(--bio-mid); }
+  .interets-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+  .interet-item {
+    font-size:1.3rem; font-weight:300; font-style:italic;
+    color:var(--cream); padding:.8rem 1.8rem;
+    border:1px solid var(--bio-mid); transition:all .3s;
+  }
+  .interet-item:hover { background:var(--bio-sage); border-color:var(--bio-sage); color:var(--bio-deep); }
+
+  /* ── FOOTER ── */
+  footer {
+    background:var(--ink); color:var(--cream); padding:3rem;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .footer-name { font-size:1.5rem; font-weight:300; }
+  .footer-name em { font-style:italic; color:var(--bio-light); }
+  footer p { font-family:'DM Mono',monospace; font-size:.6rem; letter-spacing:.1em; color:rgba(244,250,247,.3); }
+  footer a { color:rgba(244,250,247,.3); text-decoration:none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp  { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+  @keyframes expandLine { from{width:0} to{width:40px} }
+  @keyframes pulsate { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+  @keyframes floatOrg { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-8px) translateX(4px)} }
+  @keyframes rotateSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+  .reveal { opacity:0; transform:translateY(30px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  @media(max-width:900px){
+    #hero{grid-template-columns:1fr;}
+    .hero-right{display:none;}
+    .skills-layout{grid-template-columns:1fr; gap:2rem;}
+    .cert-grid{grid-template-columns:1fr;}
+    .langues-grid{grid-template-columns:repeat(2,1fr);}
+    nav{padding:1rem 1.5rem;}
+    section{padding:5rem 1.5rem;}
+    .hero-left{padding:7rem 1.5rem 4rem;}
+    .skill-row{grid-template-columns:1fr; gap:.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AEA — Portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#formation">Formation</a></li>
+    <li><a href="#experience">Expérience</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#langues">Langues</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Étudiante en Biologie · Salé, Maroc</div>
+    <h1 class="hero-name">Arij<br><em>El Aidi</em></h1>
+    <p class="hero-desc">
+      Passionnée par les sciences du vivant et la recherche expérimentale. Actuellement stagiaire au CERAM, je contribue à des travaux sur la biologie de la reproduction animale à la Faculté des Sciences de Rabat.
+    </p>
+    <div class="hero-contacts">
+      <a href="mailto:arijel.girl@gmail.com">✉&ensp;arijel.girl@gmail.com</a>
+      <a href="tel:+212653421484">☎&ensp;+212 653 421 484</a>
+    </div>
+  </div>
+
+  <!-- Cellule biologique décorative -->
+  <div class="hero-right">
+    <div class="cell-art">
+      <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Membrane cellulaire -->
+        <ellipse cx="250" cy="250" rx="195" ry="185" stroke="#3a9e62" stroke-width="2" opacity="0.5" stroke-dasharray="6 4"/>
+        <ellipse cx="250" cy="250" rx="188" ry="178" stroke="#1f6b3e" stroke-width="1" opacity="0.3"/>
+
+        <!-- Réticulum endoplasmique -->
+        <path d="M130 200 Q160 160 200 190 Q240 220 270 180 Q300 140 340 175" stroke="#72c493" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M130 215 Q160 175 200 205 Q240 235 270 195 Q300 155 340 190" stroke="#72c493" stroke-width="1" fill="none" opacity="0.25"/>
+
+        <!-- Mitochondries -->
+        <ellipse cx="155" cy="300" rx="28" ry="16" fill="#163d26" stroke="#3a9e62" stroke-width="1.2" opacity="0.8"/>
+        <path d="M140 300 Q148 292 155 300 Q162 308 170 300" stroke="#72c493" stroke-width="1" fill="none" opacity="0.6"/>
+
+        <ellipse cx="355" cy="185" rx="24" ry="14" fill="#163d26" stroke="#3a9e62" stroke-width="1.2" opacity="0.8" class="organelle2"/>
+        <path d="M342 185 Q349 178 355 185 Q361 192 368 185" stroke="#72c493" stroke-width="1" fill="none" opacity="0.6"/>
+
+        <ellipse cx="340" cy="330" rx="22" ry="13" fill="#163d26" stroke="#3a9e62" stroke-width="1.2" opacity="0.7" class="organelle3"/>
+        <path d="M328 330 Q334 323 340 330 Q346 337 352 330" stroke="#72c493" stroke-width="1" fill="none" opacity="0.5"/>
+
+        <!-- Appareil de Golgi -->
+        <path d="M290 285 Q320 275 330 290 Q340 305 310 310 Q280 315 285 300 Z" fill="#1f6b3e" stroke="#3a9e62" stroke-width="1" opacity="0.7" class="organelle"/>
+        <path d="M295 278 Q325 268 335 283 Q345 298 315 303" stroke="#72c493" stroke-width="1" fill="none" opacity="0.4"/>
+        <path d="M300 272 Q330 262 340 277" stroke="#72c493" stroke-width="1" fill="none" opacity="0.25"/>
+
+        <!-- Vacuoles -->
+        <circle cx="175" cy="175" r="18" fill="#0e2a1a" stroke="#3a9e62" stroke-width="1" opacity="0.6"/>
+        <circle cx="180" cy="170" r="5" fill="#3a9e62" opacity="0.3"/>
+        <circle cx="360" cy="340" r="14" fill="#0e2a1a" stroke="#3a9e62" stroke-width="1" opacity="0.5"/>
+
+        <!-- Ribosomes (petits points) -->
+        <circle cx="210" cy="240" r="3" fill="#72c493" opacity="0.7"/>
+        <circle cx="225" cy="255" r="3" fill="#72c493" opacity="0.6"/>
+        <circle cx="195" cy="260" r="2.5" fill="#72c493" opacity="0.5"/>
+        <circle cx="300" cy="240" r="3" fill="#72c493" opacity="0.6"/>
+        <circle cx="315" cy="255" r="2.5" fill="#72c493" opacity="0.5"/>
+        <circle cx="285" cy="250" r="3" fill="#72c493" opacity="0.7"/>
+        <circle cx="250" cy="320" r="2.5" fill="#72c493" opacity="0.5"/>
+        <circle cx="265" cy="335" r="3" fill="#72c493" opacity="0.6"/>
+
+        <!-- Noyau cellulaire -->
+        <ellipse cx="250" cy="248" rx="68" ry="62" fill="#0e2a1a" stroke="#3a9e62" stroke-width="1.8" opacity="0.95" class="nucleus"/>
+        <ellipse cx="250" cy="248" rx="68" ry="62" stroke="#72c493" stroke-width="0.8" opacity="0.2" stroke-dasharray="3 5"/>
+
+        <!-- Nucléole -->
+        <ellipse cx="243" cy="242" rx="22" ry="19" fill="#163d26" stroke="#3a9e62" stroke-width="1.2" opacity="0.9"/>
+        <ellipse cx="243" cy="242" rx="14" ry="12" fill="#1f6b3e" opacity="0.7"/>
+
+        <!-- Chromatine (ADN) -->
+        <path d="M262 232 Q270 245 262 258 Q254 271 262 282" stroke="#72c493" stroke-width="1.2" fill="none" opacity="0.5"/>
+        <path d="M268 232 Q260 245 268 258 Q276 271 268 282" stroke="#72c493" stroke-width="1.2" fill="none" opacity="0.5"/>
+        <line x1="262" y1="237" x2="268" y2="237" stroke="#c2eed5" stroke-width="1" opacity="0.4"/>
+        <line x1="260" y1="248" x2="270" y2="248" stroke="#c2eed5" stroke-width="1" opacity="0.4"/>
+        <line x1="262" y1="259" x2="268" y2="259" stroke="#c2eed5" stroke-width="1" opacity="0.4"/>
+        <line x1="263" y1="270" x2="267" y2="270" stroke="#c2eed5" stroke-width="1" opacity="0.3"/>
+
+        <!-- Label noyau -->
+        <text x="250" y="252" font-family="'Cormorant Garamond',Georgia,serif" font-size="9" fill="#c2eed5" text-anchor="middle" opacity="0.7" font-style="italic">nucleus</text>
+
+        <!-- Cercle orbital externe -->
+        <circle cx="250" cy="250" r="210" stroke="#1f6b3e" stroke-width=".5" stroke-dasharray="2 10" opacity="0.2"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Défiler</span>
+  </div>
+</section>
+
+<!-- FORMATION -->
+<section id="formation">
+  <div class="section-label">01 — Formation</div>
+  <div class="formation-grid reveal">
+    <div class="formation-card">
+      <div class="formation-year">Sept. 2025 — Présent</div>
+      <div class="formation-title">DEUG<br>Biologie · Géologie</div>
+      <div class="formation-school">Faculté des Sciences de Rabat (FSR)</div>
+      <div class="formation-desc">Formation fondamentale en sciences de la vie et de la Terre : biologie cellulaire, génétique, géologie. Initiation aux techniques de laboratoire et à la démarche scientifique.</div>
+    </div>
+    <div class="formation-card">
+      <div class="formation-year">2025</div>
+      <div class="formation-title">Baccalauréat Sciences Physiques<br>Option Français</div>
+      <div class="formation-school">Lycée Abi Bakr El Kadiri, Salé</div>
+      <div class="formation-desc">Mention obtenue. Solides bases en physique, chimie et mathématiques. Maîtrise du français académique et scientifique.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">02 — Expérience Professionnelle</div>
+  <div class="exp-card reveal">
+    <div class="exp-header">
+      <div class="exp-title">Stagiaire en Recherche — CERAM</div>
+      <div class="exp-date">Nov. 2025 — Présent</div>
+    </div>
+    <div class="exp-place">Center of Experimental Reproductive Animal Model Management · Faculté des Sciences de Rabat (FSR)</div>
+    <ul class="exp-list">
+      <li>Stage au sein du CERAM (Center of Experimental Reproductive Animal Model Management) à la FSR</li>
+      <li>Participation aux travaux de recherche sur les modèles animaux expérimentaux en biologie de la reproduction</li>
+      <li>Initiation aux protocoles expérimentaux, gestion et suivi des modèles animaux en laboratoire</li>
+      <li>Observation et contribution aux analyses liées à la reproduction et au développement animal</li>
+      <li>Application des bonnes pratiques de laboratoire et des normes éthiques de recherche</li>
+    </ul>
+    <div class="exp-tags">
+      <span class="exp-tag">Biologie de la reproduction</span>
+      <span class="exp-tag">Modèles animaux</span>
+      <span class="exp-tag">Protocoles expérimentaux</span>
+      <span class="exp-tag">Recherche scientifique</span>
+      <span class="exp-tag">BPL</span>
+      <span class="exp-tag">FSR Rabat</span>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-label">03 — Certifications</div>
+  <div class="cert-grid reveal">
+    <div class="cert-card">
+      <div class="cert-badge">NIH · NIDA · 2026</div>
+      <div class="cert-title">Good Clinical Practice (GCP)</div>
+      <div class="cert-issuer">NIDA Clinical Trials Network — NDAT CTN Clinical Coordinating Center</div>
+      <div class="cert-desc">Formation de 6 heures certifiée sur les bonnes pratiques cliniques : consentement éclairé, confidentialité, sécurité des participants, assurance qualité, protocoles de recherche, documentation et rôles & responsabilités. Tous les modules validés avec succès.</div>
+      <div class="cert-valid">✦ Valide jusqu'en février 2029</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">Institut Français · 2023</div>
+      <div class="cert-title">Certificat de Langue Française</div>
+      <div class="cert-issuer">Institut Français — Lycée Descartes, Rabat</div>
+      <div class="cert-desc">Renforcement des compétences en communication écrite et orale en français. Maîtrise des bases grammaticales et stylistiques pour un usage académique et professionnel.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCES -->
+<section id="competences">
+  <div class="section-label">04 — Compétences</div>
+  <div class="skills-layout">
+    <div class="skills-intro reveal">
+      <h2>Rigueur &<br><em>curiosité</em><br>scientifique</h2>
+      <p>Des compétences forgées entre bancs universitaires et paillasses de laboratoire, au cœur des sciences du vivant.</p>
+    </div>
+    <div class="skills-list reveal">
+      <div class="skill-row">
+        <div class="skill-cat">Sciences du vivant</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Biologie cellulaire</span>
+          <span class="skill-tag">Génétique</span>
+          <span class="skill-tag">Biologie de la reproduction</span>
+          <span class="skill-tag">Géologie</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Laboratoire</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Protocoles expérimentaux</span>
+          <span class="skill-tag">Modèles animaux</span>
+          <span class="skill-tag">BPL</span>
+          <span class="skill-tag">GCP</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Soft Skills</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Rigueur scientifique</span>
+          <span class="skill-tag">Esprit d'analyse</span>
+          <span class="skill-tag">Organisation</span>
+          <span class="skill-tag">Travail en équipe</span>
+          <span class="skill-tag">Adaptabilité</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-cat">Informatique</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Microsoft Word</span>
+          <span class="skill-tag">Excel</span>
+          <span class="skill-tag">PowerPoint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUES -->
+<section id="langues">
+  <div class="section-label">05 — Langues</div>
+  <div class="langues-grid reveal">
+    <div class="langue-card">
+      <div class="langue-name">العربية</div>
+      <div class="langue-level">Maternelle</div>
+    </div>
+    <div class="langue-card">
+      <div class="langue-name">Français</div>
+      <div class="langue-level">Courant</div>
+    </div>
+    <div class="langue-card">
+      <div class="langue-name">English</div>
+      <div class="langue-level">Courant</div>
+    </div>
+    <div class="langue-card">
+      <div class="langue-name">Deutsch</div>
+      <div class="langue-level">Débutant</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERETS -->
+<section id="interets">
+  <div class="section-label">06 — Activités & Intérêts</div>
+  <div class="interets-row reveal">
+    <div class="interet-item">Violon classique</div>
+    <div class="interet-item">Lecture</div>
+    <div class="interet-item">Sport & Fitness</div>
+    <div class="interet-item">Curiosité intellectuelle</div>
+    <div class="interet-item">Découverte culturelle</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Arij <em>El Aidi</em></div>
+  <p>Biologie · CERAM · FSR Rabat · 2025–2026</p>
+  <p><a href="mailto:arijel.girl@gmail.com">arijel.girl@gmail.com</a></p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mx=0, my=0, rx=0, ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+  });
+  (function loop(){
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.querySelectorAll('a,.skill-tag,.exp-card,.formation-card,.cert-card,.interet-item,.langue-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      cursor.style.width='16px'; cursor.style.height='16px';
+      cursor.style.background='#72c493';
+      ring.style.width='56px'; ring.style.height='56px'; ring.style.opacity='.2';
+    });
+    el.addEventListener('mouseleave',()=>{
+      cursor.style.width='10px'; cursor.style.height='10px';
+      cursor.style.background='#3a9e62';
+      ring.style.width='38px'; ring.style.height='38px'; ring.style.opacity='.45';
+    });
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('visible'), i*80);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
