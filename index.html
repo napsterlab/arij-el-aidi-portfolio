@@ -232,7 +232,7 @@
   #certifications .section-label { color:var(--bio-light); }
   #certifications .section-label::after { background:var(--bio-mid); }
 
-  .cert-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--bio-mid); border:1px solid var(--bio-mid); }
+  .cert-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px; background:var(--bio-mid); border:1px solid var(--bio-mid); }
   .cert-card {
     background:var(--bio-deep); padding:2rem;
     position:relative; overflow:hidden; transition:background .4s;
@@ -514,6 +514,20 @@
       <div class="cert-issuer">Institut Français — Lycée Descartes, Rabat</div>
       <div class="cert-desc">Renforcement des compétences en communication écrite et orale en français. Maîtrise des bases grammaticales et stylistiques pour un usage académique et professionnel.</div>
     </div>
+    <div class="cert-card">
+      <div class="cert-badge">Alison · CPD Accredited · En cours</div>
+      <div class="cert-title">Introduction to Microbiology</div>
+      <div class="cert-issuer">Alison — <a href="https://alison.com/course/introduction-to-microbiology" target="_blank" style="color:var(--bio-light);text-decoration:none;">alison.com</a></div>
+      <div class="cert-desc">Cours couvrant les principes fondamentaux de la microbiologie : structures cellulaires, diversité microbienne, métabolismes chimiques. Étude des micro-organismes (bactéries, virus, champignons, protozoaires) et de leur rôle en médecine, immunologie et industrie alimentaire.</div>
+      <div class="cert-valid">⧖ Formation en cours</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-badge">Alison · CPD Accredited · En cours</div>
+      <div class="cert-title">Foundational Microbiology</div>
+      <div class="cert-issuer">Alison — <a href="https://alison.com/course/foundational-microbiology" target="_blank" style="color:var(--bio-light);text-decoration:none;">alison.com</a></div>
+      <div class="cert-desc">Formation approfondie sur les micro-organismes : bactéries, virus, champignons, parasites (protozoaires, helminthes) et prions. Analyse des maladies liées aux agents pathogènes et de leur impact sur la santé mondiale, dont COVID-19.</div>
+      <div class="cert-valid">⧖ Formation en cours</div>
+    </div>
   </div>
 </section>
 
@@ -532,6 +546,7 @@
           <span class="skill-tag">Biologie cellulaire</span>
           <span class="skill-tag">Génétique</span>
           <span class="skill-tag">Biologie de la reproduction</span>
+          <span class="skill-tag">Microbiologie</span>
           <span class="skill-tag">Géologie</span>
         </div>
       </div>
